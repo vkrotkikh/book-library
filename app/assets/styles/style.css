@@ -1,0 +1,48 @@
+@import url(d:\dev\books\app\assets\styles\reset.css);
+.books-list td:nth-child(1) {
+  width: 20%;
+}
+
+.books-list td:nth-child(2) {
+  width: 20%;
+}
+
+.books-list td:nth-child(3) {
+  width: 40%;
+}
+
+.books-list td:nth-child(4) {
+  width: 10%;
+}
+
+.books-list td:nth-child(5) {
+  width: 10%;
+}
+
+h1 {
+  font-size: 32px;
+}
+
+a {
+  cursor: pointer;
+}
+
+.page-heading {
+  display: flex;
+  padding: 15px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-row-buttons {
+  display: flex;
+  justify-content: end;
+}
+
+.modal-row-buttons button {
+  min-width: 120px;
+}
+
+.modal-row-buttons button:last-of-type {
+  margin-left: 15px;
+}
