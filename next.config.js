@@ -1,8 +1,5 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    appDir: true,
+module.exports = {
+  devIndicators: {
+    port: 80,
   },
-}
-
-module.exports = nextConfig
+};

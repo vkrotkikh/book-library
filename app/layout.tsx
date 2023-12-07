@@ -1,5 +1,5 @@
 //layout.js
-import { Providers } from "@/lib/provider";
+import { Providers } from "@/app/lib/provider";
 import "./assets/styles/style.min.css"
 
 export const metadata = {
@@ -7,7 +7,7 @@ export const metadata = {
   description: "Buy books or go away!",
 };
 
-const RootLayout = ({ children }: {children:any}) => {
+const RootLayout = ({ children }: {children:React.ReactNode}) => {
   return (
     <html lang="en">
       <head></head>

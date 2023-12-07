@@ -1,6 +1,13 @@
-@import 'reset.css';
+@import 'reset.scss';
+
+body {
+    background:#eee;
+} 
 
 .books-list {
+    th {
+        white-space: nowrap;
+    }
     td:nth-child(1) {width:20%;}
     td:nth-child(2) {width:20%;}
     td:nth-child(3) {width:40%;}
@@ -18,9 +25,14 @@ a {
 
 .page-heading {
     display: flex;
+    margin-top:25px;
     padding:15px;
     justify-content: space-between;
     align-items: center;
+}
+
+.modal-header {
+    padding-bottom:30px;
 }
 
 .modal-row-buttons { 

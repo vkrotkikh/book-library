@@ -1,74 +1,79 @@
 'use client'
-import { useState } from 'react';
-import { Box, Button, Typography, Modal, Grid, FormControl, TextField } from '@mui/material';
+import { useState, useEffect } from 'react';
+import {Box, Button, Typography, Modal, Grid, FormControl, TextField } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { useAppDispatch, RootState, AppDispatch } from '@/lib/store';
-import { addBook} from '@/lib/bookSlice';
-import { NewBookTypes } from './../types';
+import { useAppDispatch, RootState, AppDispatch } from '@/app/lib/store';
+import { addBook, editBook } from '@/app/lib/bookSlice';
+import { muiModalStyles } from '@/app/lib/mui-styles';
+import {BookTypes } from '@/app/types';
 
-const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4,
-  };
-
-const BookAdd = (): JSX.Element => {
+const BookModal = ({bookId, visibility, onClose}:{bookId:string, visibility:boolean, onClose:()=>void}): JSX.Element => {
     const dispatch: AppDispatch = useAppDispatch(); 
+    const booksData = useSelector((state: RootState) => state.books);
+    const book = booksData.find((item) => item.id === bookId);
+    const modalTitle = bookId.length ? 'Book Edit' : 'Book Add';
 
     const [bookName, setBookName] = useState('');
     const [bookCategory, setBookCategory] = useState('');
     const [bookPrice, setBookPrice] = useState(0);
     const [bookDescription, setBookDescription] = useState('');
-    const [bookAddErrors, setBookAddErrors] = useState({
-        bookName: "",
-        bookCategory: "",
-        bookPrice: "",
-      });
+    const [bookAddErrors, setBookAddErrors] = useState({ bookName: "", bookCategory: "", bookPrice: "", });
 
-    const [visibilityModal, setVisibilityModal] = useState(false);
+    const changeBookPrice = (value:string) => {
+        const regex = /^\d*\.?\d{0,2}$/;
+        if (regex.test(value)) {
+            setBookPrice(Number(value));
+        }
+    }
 
-    const handleAddBook = () => {
-        const newBook:NewBookTypes = {
-            name: bookName,
-            category: bookCategory,
-            price: bookPrice,
-            description: bookDescription
-        } 
+    useEffect(() => {
+        if (book) {
+            setBookName(book.name);
+            setBookCategory(book.category);
+            setBookPrice(book.price);
+            setBookDescription(book.description || '');
+        } else {
+            setBookName('');
+            setBookCategory('');
+            setBookPrice(0);
+            setBookDescription(''); 
+            setBookDescription('');
+        }
+    }, [visibility]);
 
+    const handleBookSubmit = () => {
         const newErrors = {
           bookName: bookName ? "" : "Name is required",
           bookCategory: bookCategory ? "" : "Category is required",
           bookPrice: bookPrice > 0 ? "" : "Price must be greater than 0",
         };
-    
-        setBookAddErrors(newErrors);
 
-        if (!Object.values(newErrors).some((error) => error !== "")) {
-            dispatch(addBook(newBook))
-            setBookName('');
-            setBookCategory('');
-            setBookPrice(0);
-            setBookDescription('');
-            setVisibilityModal(false);
+        setBookAddErrors(newErrors);
+        const checkError = Object.values(newErrors).some((error) => error !== "");
+
+        if (!checkError) {
+            const BookObject:BookTypes = {
+                id:bookId,
+                name: bookName,
+                category: bookCategory,
+                price: bookPrice,
+                description: bookDescription
+            }
+            
+            bookId.length ? dispatch(editBook(BookObject)) : dispatch(addBook(BookObject))
+            onClose()
         }
     } 
-
+ 
 return (
-        <Box className="page-heading"> 
-            <Button variant="contained" onClick={()=>{setVisibilityModal(true)}}>Add Book</Button> 
-        <Modal
-            open={visibilityModal}
-            onClose={()=>{setVisibilityModal(false)}} 
+    <Modal
+            open={visibility}
+            onClose={()=>{onClose()}} 
         >
-            <Box sx={style}>
-            <Typography id="modal-itle" variant="h6" component="h2">
-                Book Add
-            </Typography> 
+            <Box sx={muiModalStyles}>
+                <Box className="modal-header">
+                    <Typography id="modal-itle" variant="h6" component="h2"> {modalTitle} </Typography> 
+                </Box>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <FormControl fullWidth>
@@ -99,11 +104,9 @@ return (
                                 value={bookPrice}
                                 error={!!bookAddErrors.bookPrice}
                                 helperText={bookAddErrors.bookPrice}
-                                onChange={({ target }) => setBookPrice(Number(target.value))} 
-                                type="number"
+                                onChange={({ target }) => changeBookPrice(target.value)}
                                 label="Price"
-                                variant="outlined" 
-                                InputProps={{ inputProps: { min: 0 } }} />
+                                variant="outlined"/>
                         </FormControl>
                     </Grid>
                     <Grid item xs={12}>
@@ -119,16 +122,14 @@ return (
                     </Grid>
                     <Grid className='modal-footer' item xs={12}>
                         <Box className="modal-row-buttons">
-                            <Button variant="outlined" onClick={()=>{setVisibilityModal(false)}}>Cancel</Button>
-                            <Button variant="contained" onClick={handleAddBook}>Save</Button>
+                            <Button variant="outlined" onClick={()=>{onClose()}}>Cancel</Button>
+                            <Button variant="contained" onClick={handleBookSubmit}>Save</Button>
                         </Box>
                     </Grid>
                 </Grid>
             </Box>
-        </Modal> 
-        </Box>
+        </Modal>  
 )
 }
 
-
-export default BookAdd;
+export default BookModal;

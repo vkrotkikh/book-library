@@ -1,10 +1,9 @@
-import BooksList from './components/books-list';
+import BooksList from './pages/books';
 
 const Home = (): JSX.Element => {
   return (
       <BooksList />
   )
 }
-
 
 export default Home;

@@ -5,6 +5,3 @@ export interface BookTypes {
     price: number;
     description?: string;
   }
-
-  
-export type NewBookTypes = Omit<BookTypes, 'id'>;

@@ -1,9 +1,10 @@
 {
   "name": "books",
   "version": "0.1.0",
+  "homepage": "http://test.vakr.host/",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 80",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
